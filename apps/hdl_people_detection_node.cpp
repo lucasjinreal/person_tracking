@@ -31,7 +31,7 @@
 
 using namespace google;
 
-class HdlPeopleDetectionNodelet : public nodelet::Nodelet {
+class HdlPeopleDetectionNodelet {
  public:
   using PointT = pcl::PointXYZI;
 
@@ -82,6 +82,8 @@ class HdlPeopleDetectionNodelet : public nodelet::Nodelet {
       sync->registerCallback(
           boost::bind(&HdlPeopleDetectionNodelet::callback, this, _1, _2));
     }
+
+    LOG(INFO) << "person detector initilized done.";
   }
   virtual ~HdlPeopleDetectionNodelet() {}
 
