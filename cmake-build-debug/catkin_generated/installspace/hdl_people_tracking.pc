@@ -1,8 +1,0 @@
-prefix=/usr/local
-
-Name: hdl_people_tracking
-Description: Description of hdl_people_tracking
-Version: 0.0.0
-Cflags: -I/usr/local/include
-Libs: -L/usr/local/lib -lhdl_people_tracking
-Requires: nodelet pcl_ros roscpp sensor_msgs message_runtime
