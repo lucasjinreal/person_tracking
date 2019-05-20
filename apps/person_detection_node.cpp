@@ -52,7 +52,7 @@ class PersonDetectorNode {
     detection_markers_pub = private_nh.advertise<visualization_msgs::MarkerArray>("detection_markers", 5);
     backsub_voxel_points_pub = private_nh.advertise<sensor_msgs::PointCloud2>("backsub_voxel_points", 1, true);
     backsub_voxel_markers_pub = private_nh.advertise<visualization_msgs::Marker>("backsub_voxel_marker", 1, true);
-    clusters_pub = private_nh.advertise<cti_msgs::CloudClusterArray>("clusters", 10);
+    clusters_pub = private_nh.advertise<cti_msgs::CloudClusterArray>("/cti/perception/clusters", 10);
 
     // subscribers
     globalmap_sub = nh.subscribe("/globalmap", 1, &PersonDetectorNode::globalmap_callback, this);

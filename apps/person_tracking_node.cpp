@@ -36,13 +36,11 @@ public:
   PersonTrackingNode(ros::NodeHandle nh) {
     LOG(INFO) << "starting tracking node....";
     private_nh = nh;
-
     tracker.reset(new PeopleTracker(private_nh));
     color_palette = cvk::create_color_palette(16);
-
     tracks_pub = private_nh.advertise<cti_msgs::TrackArray>("tracks", 10);
     marker_pub = private_nh.advertise<visualization_msgs::MarkerArray>("markers", 10);
-    clusters_sub = nh.subscribe("/hdl_people_detection_nodelet/clusters", 1, &PersonTrackingNode::callback, this);
+    clusters_sub = nh.subscribe("/cti/perception/clusters", 1, &PersonTrackingNode::callback, this);
   }
 
   virtual ~PersonTrackingNode() {}
@@ -52,6 +50,7 @@ private:
 
   void callback(const cti_msgs::CloudClusterArrayPtr& clusters_msg) {
     // remove non-human detections
+    LOG(INFO) << "got a clusted result, start to track..";
     auto remove_loc = std::remove_if(clusters_msg->clusters.begin(), clusters_msg->clusters.end(), [=](const cti_msgs::CloudCluster& cluster) {
       return !cluster.is_human;
     });
@@ -192,7 +191,6 @@ private:
   ros::Subscriber clusters_sub;
 
   boost::circular_buffer<cv::Scalar> color_palette;
-
   std::unique_ptr<PeopleTracker> tracker;
 };
 }
