@@ -5,8 +5,8 @@
 
   <node pkg="nodelet" type="nodelet" name="$(arg nodelet_manager)" args="manager" output="screen"/>
 
-  <!-- <node pkg="nodelet" type="nodelet" name="hdl_people_detection_nodelet" args="load hdl_people_detection/HdlPeopleDetectionNodelet $(arg nodelet_manager)"> -->
-  <node pkg="nodelet" type="nodelet" name="hdl_people_detection_nodelet" args="load hdl_people_tracking/HdlPeopleDetectionNodelet">
+  <!-- <node pkg="nodelet" type="nodelet" name="hdl_people_detection_nodelet" args="load hdl_people_detection/PersonDetectorNode $(arg nodelet_manager)"> -->
+  <node pkg="nodelet" type="nodelet" name="hdl_people_detection_nodelet" args="load hdl_people_tracking/PersonDetectorNode">
   	<param name="static_sensor" value="true"/>
     <param name="downsample_resolution" value="0.1"/>
     <param name="backsub_resolution" value="0.2"/>
@@ -22,7 +22,7 @@
     <param name="enable_classification" value="false"/>
   </node>
 
-  <node pkg="nodelet" type="nodelet" name="hdl_people_tracking_nodelet" args="load hdl_people_tracking/HdlPeopleTrackingNodelet $(arg nodelet_manager)">
+  <node pkg="nodelet" type="nodelet" name="hdl_people_tracking_nodelet" args="load hdl_people_tracking/PersonTrackingNode $(arg nodelet_manager)">
     <param name="remove_trace_thresh" value="1.0"/>
     <param name="human_radius" value="0.4"/>
   </node>

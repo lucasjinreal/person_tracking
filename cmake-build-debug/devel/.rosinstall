@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /media/jintian/data/catkin_ws/src/perception/lidar/lidar_detector/person_tracking/cmake-build-debug/devel/setup.sh

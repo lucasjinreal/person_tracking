@@ -5,6 +5,12 @@
 #include <hdl_people_detection/cluster_detector.hpp>
 #include <hdl_people_detection/marcel_people_detector.hpp>
 
+#include "glog/logging.h"
+
+
+using namespace google;
+
+
 namespace hdl_people_detection {
 
 PeopleDetector::PeopleDetector(ros::NodeHandle &nh) {
@@ -18,7 +24,8 @@ PeopleDetector::PeopleDetector(ros::NodeHandle &nh) {
   max_size.z() = nh.param<double>("cluster_max_size_z", 2.0);
 
   if(nh.param<bool>("enable_classification", true)) {
-    std::string package_path = ros::package::getPath("hdl_people_tracking");
+    std::string package_path = ros::package::getPath("person_tracking");
+    LOG(INFO) << "loading person classifier model from: " << package_path;
     classifier.reset(new KidonoHumanClassifier(package_path + "/data/boost_kidono.model", package_path + "/data/boost_kidono.scale"));
   }
 }
