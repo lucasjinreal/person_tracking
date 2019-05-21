@@ -7,15 +7,15 @@
     <param name="downsample_resolution" value="0.1"/>
     <param name="backsub_resolution" value="0.2"/>
     <param name="backsub_occupancy_thresh" value="2"/>
-    <param name="cluster_min_pts" value="10"/>
-    <param name="cluster_max_pts" value="2048"/>
+    <param name="cluster_min_pts" value="20"/>
+    <param name="cluster_max_pts" value="180"/>
     <param name="cluster_min_size_x" value="0.2"/>
     <param name="cluster_min_size_y" value="0.2"/>
-    <param name="cluster_min_size_z" value="0.3"/>
+    <param name="cluster_min_size_z" value="-1.4"/>
     <param name="cluster_max_size_x" value="1.0"/>
     <param name="cluster_max_size_y" value="1.0"/>
     <param name="cluster_max_size_z" value="2.0"/>
-    <param name="enable_classification" value="false"/>
+    <param name="enable_classification" value="true"/>
   </node>
 
   <node pkg="person_tracking" type="person_tracking_node" name="person_tracking_node">

@@ -72,10 +72,8 @@ class PersonDetectorNode {
 
  private:
   void initialize_params() {
-    double downsample_resolution =
-        private_nh.param<double>("downsample_resolution", 0.1);
-    boost::shared_ptr<pcl::VoxelGrid<PointT>> voxelgrid(
-        new pcl::VoxelGrid<PointT>());
+    double downsample_resolution = private_nh.param<double>("downsample_resolution", 0.1);
+    boost::shared_ptr<pcl::VoxelGrid<PointT>> voxelgrid(new pcl::VoxelGrid<PointT>());
     voxelgrid->setLeafSize(downsample_resolution, downsample_resolution,
                            downsample_resolution);
     downsample_filter = voxelgrid;
@@ -110,7 +108,6 @@ class PersonDetectorNode {
     auto filtered = backsub->filter(cloud);
     auto clusters = detector->detect(filtered);
     publish_msgs(points_msg->header.stamp, filtered, clusters);
-    LOG(INFO) << "published filtered and clustered.";
   }
 
   void callback(const nav_msgs::OdometryConstPtr &odom_msg,
@@ -310,8 +307,9 @@ class PersonDetectorNode {
 int main(int argc, char **argv) {
   ros::init(argc, argv, "abc");
   ros::NodeHandle nh;
+  ros::NodeHandle pn("~");
 
-  PersonDetectorNode *personDetNode = new PersonDetectorNode(nh);
+  PersonDetectorNode *personDetNode = new PersonDetectorNode(pn);
 
   ros::Rate rater(10);
   while (ros::ok()) {

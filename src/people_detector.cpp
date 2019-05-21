@@ -23,7 +23,20 @@ PeopleDetector::PeopleDetector(ros::NodeHandle &nh) {
   max_size.y() = nh.param<double>("cluster_max_size_y", 1.0);
   max_size.z() = nh.param<double>("cluster_max_size_z", 2.0);
 
+  nh.param("cluster_min_pts", min_pts, 10);
+  nh.param("cluster_max_pts", max_pts, 9990);
+
+  LOG(INFO) << "min_pts: " << min_pts;
+  LOG(INFO) << "max_pts: " << max_pts;
+  LOG(INFO) << "min_size.x: " << min_size.x();
+  LOG(INFO) << "min_size.y: " << min_size.y();
+  LOG(INFO) << "min_size.z: " << min_size.z();
+  LOG(INFO) << "max_size.x: " << max_size.x();
+  LOG(INFO) << "max_size.y: " << max_size.y();
+  LOG(INFO) << "max_size.z: " << max_size.z();
+
   if(nh.param<bool>("enable_classification", true)) {
+    LOG(INFO) << "enable_classification: true";
     std::string package_path = ros::package::getPath("person_tracking");
     LOG(INFO) << "loading person classifier model from: " << package_path;
     classifier.reset(new KidonoHumanClassifier(package_path + "/data/boost_kidono.model", package_path + "/data/boost_kidono.scale"));

@@ -50,7 +50,6 @@ private:
 
   void callback(const cti_msgs::CloudClusterArrayPtr& clusters_msg) {
     // remove non-human detections
-    LOG(INFO) << "got a clusted result, start to track..";
     auto remove_loc = std::remove_if(clusters_msg->clusters.begin(), clusters_msg->clusters.end(), [=](const cti_msgs::CloudCluster& cluster) {
       return !cluster.is_human;
     });
@@ -74,7 +73,6 @@ private:
   cti_msgs::TrackArrayConstPtr create_tracks_msg(const std_msgs::Header& header) const {
     cti_msgs::TrackArrayPtr tracks_msg(new cti_msgs::TrackArray());
     tracks_msg->header = header;
-
     tracks_msg->tracks.resize(tracker->people.size());
     for(int i=0; i<tracker->people.size(); i++) {
       const auto& track = tracker->people[i];
@@ -107,7 +105,6 @@ private:
       if(!associated) {
         continue;
       }
-
       track_msg.associated.resize(1);
       track_msg.associated[0] = (*associated);
     }
@@ -117,7 +114,7 @@ private:
 
   visualization_msgs::MarkerArrayConstPtr create_tracked_people_marker(const std_msgs::Header& header) const {
     visualization_msgs::MarkerArrayPtr markers_ptr(new visualization_msgs::MarkerArray());
-
+    // how to show and visualize a trace
     visualization_msgs::MarkerArray& markers = *markers_ptr;
     markers.markers.reserve(tracker->people.size() + 1);
     markers.markers.resize(1);
@@ -172,8 +169,7 @@ private:
       text.pose.position = point;
       text.pose.position.z += 0.7;
       text.color.r = text.color.g = text.color.b = text.color.a = 1.0;
-      text.text = (boost::format("id:%d") % person->id()).str();
-
+      text.text = (boost::format("ID: %d") % person->id()).str();
       markers.markers.push_back(text);
     }
 
@@ -198,8 +194,9 @@ private:
 int main(int argc, char** argv) {
   ros::init(argc, argv, "abc");
   ros::NodeHandle nh;
+  ros::NodeHandle pn("~");
 
-  hdl_people_tracking::PersonTrackingNode personTracking(nh);
+  hdl_people_tracking::PersonTrackingNode personTracking(pn);
 
   ros::Rate rate(10);
   while (ros::ok()) {
