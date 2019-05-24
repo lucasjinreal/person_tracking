@@ -60,7 +60,7 @@ target_link_libraries(person_det_node
         ${PCL_LIBRARIES}
         glog
         )
-add_dependencies(person_det_node hdl_people_tracking_gencpp)
+#add_dependencies(person_det_node)
 
 add_executable(person_tracking_node apps/person_tracking_node.cpp)
 target_link_libraries(person_tracking_node
@@ -69,4 +69,3 @@ target_link_libraries(person_tracking_node
         ${PCL_LIBRARIES}
         glog
         )
-add_dependencies(person_tracking_node hdl_people_tracking_gencpp)
