@@ -49,6 +49,7 @@ public:
 private:
 
   void callback(const cti_msgs::CloudClusterArrayPtr& clusters_msg) {
+    LOG(INFO) << "got " << clusters_msg->clusters.size() << " clusters";
     // remove non-human detections
     auto remove_loc = std::remove_if(clusters_msg->clusters.begin(), clusters_msg->clusters.end(), [=](const cti_msgs::CloudCluster& cluster) {
       return !cluster.is_human;
@@ -71,6 +72,8 @@ private:
   }
 
   cti_msgs::TrackArrayConstPtr create_tracks_msg(const std_msgs::Header& header) const {
+    // we need to calculate speed of every track id
+    // by record last tracked object position
     cti_msgs::TrackArrayPtr tracks_msg(new cti_msgs::TrackArray());
     tracks_msg->header = header;
     tracks_msg->tracks.resize(tracker->people.size());
@@ -86,6 +89,7 @@ private:
       track_msg.vel.x = track->velocity().x();
       track_msg.vel.y = track->velocity().y();
       track_msg.vel.z = track->velocity().z();
+      track_msg.vel_rel = track->velocity_relative();
 
       Eigen::Matrix3d pos_cov = track->positionCov();
       for(int k=0; k<3; k++) {
@@ -108,7 +112,6 @@ private:
       track_msg.associated.resize(1);
       track_msg.associated[0] = (*associated);
     }
-
     return tracks_msg;
   }
 
@@ -169,7 +172,7 @@ private:
       text.pose.position = point;
       text.pose.position.z += 0.7;
       text.color.r = text.color.g = text.color.b = text.color.a = 1.0;
-      text.text = (boost::format("ID: %d") % person->id()).str();
+      text.text = (boost::format("ID: %d v: %3.3fm/s") % person->id() % person->velocity_relative()).str();
       markers.markers.push_back(text);
     }
 

@@ -38,6 +38,8 @@ boost::optional<double> distance(const std::shared_ptr<hdl_people_tracking::Kalm
 }
 
 namespace hdl_people_tracking {
+
+
 class PeopleTracker {
  public:
   PeopleTracker(ros::NodeHandle &private_nh) {

@@ -58,12 +58,17 @@ class PersonDetectorNode {
     globalmap_sub = nh.subscribe("/globalmap", 1, &PersonDetectorNode::globalmap_callback, this);
 
     if (private_nh.param<bool>("static_sensor", true)) {
-      static_points_sub = mt_nh.subscribe("/cti/sensor/rslidar/PointCloud2", 32, &PersonDetectorNode::callback_static, this);
+      static_points_sub =
+          mt_nh.subscribe("/cti/sensor/rslidar/PointCloud2", 32, &PersonDetectorNode::callback_static, this);
     } else {
       ROS_INFO("get static_sensor from params to false");
       odom_sub.reset(new message_filters::Subscriber<nav_msgs::Odometry>(mt_nh, "/odom", 20));
-      points_sub.reset(new message_filters::Subscriber<sensor_msgs::PointCloud2>(mt_nh, "/cti/sensor/rslidar/PointCloud2", 20));
-      sync.reset(new message_filters::TimeSynchronizer<nav_msgs::Odometry, sensor_msgs::PointCloud2>(*odom_sub, *points_sub, 20));
+      points_sub.reset(new message_filters::Subscriber<sensor_msgs::PointCloud2>(mt_nh,
+                                                                                 "/cti/sensor/rslidar/PointCloud2",
+                                                                                 20));
+      sync.reset(new message_filters::TimeSynchronizer<nav_msgs::Odometry, sensor_msgs::PointCloud2>(*odom_sub,
+                                                                                                     *points_sub,
+                                                                                                     20));
       sync->registerCallback(boost::bind(&PersonDetectorNode::callback, this, _1, _2));
     }
     LOG(INFO) << "person detector initialize done, ready to detect person on lidar";
@@ -239,7 +244,7 @@ class PersonDetectorNode {
       human_points_pub.publish(accum);
     }
 
-          detection_markers_pub.publish(create_markers(stamp, clusters));
+    detection_markers_pub.publish(create_markers(stamp, clusters));
   }
 
   visualization_msgs::MarkerArrayConstPtr create_markers(

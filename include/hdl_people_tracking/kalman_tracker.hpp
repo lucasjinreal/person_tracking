@@ -8,7 +8,7 @@
 
 #include <kkl/math/gaussian.hpp>
 #include <kkl/alg/kalman_filter.hpp>
-
+#include "math.h"
 
 namespace hdl_people_tracking {
 
@@ -62,6 +62,7 @@ public:
   void predict(const ros::Time& time) {
     double difftime = (time - last_prediction_time).toSec();
     difftime = std::max(0.001, difftime);
+    delta_time = difftime;
 
     kalman_filter->transitionMatrix(0, 3) = difftime;
     kalman_filter->transitionMatrix(1, 4) = difftime;
@@ -69,7 +70,6 @@ public:
 
     kalman_filter->predict(Eigen::Matrix<double, 2, 1>::Zero());
     last_prediction_time = time;
-
     last_associated = boost::any();
   }
 
@@ -85,6 +85,12 @@ public:
     correction_count++;
     last_correction_time = time;
     last_associated = associated;
+    // set last_position when correct step
+
+    // (pos - last_pos) / difftime to get speed
+    double dis = pow(pos[0] - last_position[0], 2) + pow(pos[1] - last_position[1], 2);
+    velocity_relative_current = sqrt(dis)/delta_time;
+    last_position = pos;
   }
 
 public:
@@ -106,6 +112,15 @@ public:
 
   Eigen::Vector3d position() const {
     return kalman_filter->mean.head<3>();
+  }
+
+//  Eigen::Vector3d last_position() const {
+//    return kalman_filter->mean.head<3>();
+//  }
+
+ float velocity_relative() {
+    // call this to get the
+    return velocity_relative_current;
   }
 
   Eigen::Vector3d velocity() const {
@@ -138,6 +153,9 @@ private:
   ros::Time init_time;              // time when the tracker was initialized
   ros::Time last_prediction_time;   // tiem when prediction was performed
   ros::Time last_correction_time;   // time when correction was performed
+  Eigen::Vector3d last_position; // last position x, y, z
+  float velocity_relative_current;
+  double delta_time;
 
   boost::any last_associated;       // associated detection data
 
