@@ -2,19 +2,19 @@
 <launch>
 
   <!-- call points merge node since we need that pointcloud do person detection & tracking -->
-  <!-- <include file="$(find lidar_preprocessor)/launch/top_front_lidar_merge.launch"/> -->
+  <include file="$(find lidar_preprocessor)/launch/top_front_lidar_merge.launch"/>
 
   <node pkg="person_tracking" type="person_det_node" name="lidar_person_detection">
     <param name="static_sensor" value="true"/>
     <param name="downsample_resolution" value="0.2"/>
-    <param name="pc_raw" value="/cti/sensor/rslidar/PointCloud2"/>
+    <param name="pc_raw" value="/lidar_pointcloud_merged"/>
     <param name="backsub_resolution" value="0.2"/>
     <param name="backsub_occupancy_thresh" value="2"/>
     <param name="cluster_min_pts" value="20"/>
-    <param name="cluster_max_pts" value="250"/>
+    <param name="cluster_max_pts" value="450"/>
     <param name="cluster_min_size_x" value="0.2"/>
     <param name="cluster_min_size_y" value="0.2"/>
-    <param name="cluster_min_size_z" value="-1.4"/>
+    <param name="cluster_min_size_z" value="-1.5"/>
     <param name="cluster_max_size_x" value="1.0"/>
     <param name="cluster_max_size_y" value="1.0"/>
     <param name="cluster_max_size_z" value="2.0"/>

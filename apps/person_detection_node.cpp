@@ -2,7 +2,7 @@
 #include <iostream>
 #include <memory>
 #include <mutex>
-
+#include <string>
 #include <pcl/common/transforms.h>
 #include <pcl/filters/filter.h>
 #include <pcl/filters/voxel_grid.h>
@@ -29,6 +29,7 @@
 #include "glog/logging.h"
 
 using namespace google;
+using namespace std;
 using namespace hdl_people_detection;
 
 class PersonDetectorNode {
@@ -54,17 +55,22 @@ class PersonDetectorNode {
     backsub_voxel_markers_pub = private_nh.advertise<visualization_msgs::Marker>("backsub_voxel_marker", 1, true);
     clusters_pub = private_nh.advertise<cti_msgs::CloudClusterArray>("/cti/perception/clusters", 10);
 
+    // string to sub
+    private_nh.param<string>("pc_raw", sub_raw_pc, "/cti/sensor/rslidar/PointCloud2");
+    LOG(INFO) << "raw point topic: " << sub_raw_pc;
+
     // subscribers
     globalmap_sub = nh.subscribe("/globalmap", 1, &PersonDetectorNode::globalmap_callback, this);
+    // raw_pc_sub = nh.subscribe
 
     if (private_nh.param<bool>("static_sensor", true)) {
       static_points_sub =
-          mt_nh.subscribe("/cti/sensor/rslidar/PointCloud2", 32, &PersonDetectorNode::callback_static, this);
+          mt_nh.subscribe(sub_raw_pc, 32, &PersonDetectorNode::callback_static, this);
     } else {
       ROS_INFO("get static_sensor from params to false");
       odom_sub.reset(new message_filters::Subscriber<nav_msgs::Odometry>(mt_nh, "/odom", 20));
       points_sub.reset(new message_filters::Subscriber<sensor_msgs::PointCloud2>(mt_nh,
-                                                                                 "/cti/sensor/rslidar/PointCloud2",
+                                                                                 sub_raw_pc,
                                                                                  20));
       sync.reset(new message_filters::TimeSynchronizer<nav_msgs::Odometry, sensor_msgs::PointCloud2>(*odom_sub,
                                                                                                      *points_sub,
@@ -294,6 +300,7 @@ class PersonDetectorNode {
   std::unique_ptr<message_filters::TimeSynchronizer<nav_msgs::Odometry, sensor_msgs::PointCloud2>> sync;
   ros::Subscriber globalmap_sub;
   ros::Subscriber static_points_sub;
+  string sub_raw_pc;
 
   // publishers
   ros::Publisher backsub_points_pub;
